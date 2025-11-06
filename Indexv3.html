@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Bauker Repuestos & Accesorios</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root{
+      --color-principal:#ff9900;
+      --color-fondo:#0a0a0a;
+      --color-texto:#f4f4f4;
+      --color-secundario:#161616;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:"Poppins",sans-serif;background:var(--color-fondo);color:var(--color-texto);overflow-x:hidden}
+    header{background:#111;padding:1rem 2rem;position:fixed;width:100%;top:0;left:0;z-index:100;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #222}
+    .logo{color:var(--color-principal);font-size:1.5rem;font-weight:700;text-transform:uppercase}
+    nav ul{display:flex;list-style:none;gap:1.5rem}
+    nav ul li a{color:var(--color-texto);text-decoration:none;font-weight:500;transition:color .2s;cursor:pointer}
+    nav ul li a:hover{color:var(--color-principal)}
+    nav ul li a.active{color:var(--color-principal);text-decoration:underline}
+    .banner{position:relative;height:80vh;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.7)),url("https://plus.unsplash.com/premium_photo-1674927125657-e8782933d009?fm=jpg&q=80&w=1600") no-repeat center center/cover;margin-top:70px;transition:background-image 1s ease-in-out}
+    .banner-content{z-index:2;animation:fadeIn 1.2s ease}
+    .banner-content h1{color:var(--color-principal);font-size:3rem;text-shadow:0 0 10px rgba(255,153,0,.5);margin-bottom:1rem}
+    .banner-content p{color:#ddd;font-size:1.1rem}
+    @keyframes fadeIn{from{opacity:0;transform:scale(1.04)}to{opacity:1;transform:scale(1)}}
+    .main { max-width:1100px;margin:60px auto 40px;padding:0 20px; } /* margen superior reducido por header fijo */
+    /* catálogo dinámico (aquí cambia el contenido) */
+    .catalogo{ /* contenedor que será dinámico */ }
+    .catalogo h2{ text-align:center;color:var(--color-principal);font-size:2rem;margin-bottom:18px }
+    .grid-productos{ display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:25px }
+    .producto{ background:var(--color-secundario);border-radius:15px;padding:20px;text-align:center;transition:transform .3s ease,box-shadow .3s ease;border:1px solid #2a2a2a }
+    .producto:hover{ transform:translateY(-6px);box-shadow:0 8px 25px rgba(255,153,0,.15) }
+    .producto h3{ color:var(--color-principal);font-size:1.1rem;margin-bottom:8px }
+    .producto p{ color:#ccc;font-size:1rem }
+    .carrusel{ position:relative;width:100%;height:150px;overflow:hidden;border-radius:8px;margin-bottom:12px }
+    .carrusel img{ width:100%;height:150px;object-fit:cover;position:absolute;top:0;left:0;opacity:0;transition:opacity .5s ease-in-out }
+    .carrusel img.active{ opacity:1 }
+    /* contact area styles (when catalogo shows contact info) */
+    .contact-card{ background:var(--color-secundario);padding:20px;border-radius:12px;border:1px solid #222;box-shadow:0 6px 20px rgba(0,0,0,.3);color:#ddd;display:grid;gap:14px;align-items:start }
+    .contact-row{ display:flex;gap:12px;align-items:center;flex-wrap:wrap }
+    .location-icon{ width:34px;height:34px;border-radius:8px;background:var(--color-principal);display:inline-flex;align-items:center;justify-content:center;color:#000;font-weight:700 }
+    .contact-actions{ display:flex;gap:12px;flex-wrap:wrap }
+    .btn{ display:inline-block;background:var(--color-principal);color:#000;text-decoration:none;padding:12px 18px;border-radius:50px;margin:0;font-weight:600;transition:all .18s ease;cursor:pointer }
+    .btn:hover{ transform:scale(1.03);background:#ffb84d }
+    .map-embed{ width:100%;height:280px;border-radius:12px;border:0;box-shadow:0 8px 20px rgba(0,0,0,.4); }
+    /* footer */
+    footer{ background:#0d0d0d;text-align:center;padding:22px 15px;color:#aaa;font-size:.9rem;border-top:1px solid #222;margin-top:30px }
+    footer span{ color:var(--color-principal) }
+    /* responsive */
+    @media(max-width:768px){ .banner{height:60vh}.banner-content h1{font-size:2rem} .map-embed{height:240px} }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Accesorios</div>
+    <nav>
+      <ul>
+        <li><a data-section="inicio" class="active">Inicio</a></li>
+        <li><a data-section="productos">Productos</a></li>
+        <li><a data-section="servicios">Servicios</a></li>
+        <li><a data-section="contacto">Contacto</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="banner" id="banner">
+    <div class="banner-content">
+      <h1>Bauker Repuestos & Accesorios</h1>
+      <p>Repuestos y herramientas para mezcladoras de cemento — Envíos a toda Colombia 🇨🇴</p>
+    </div>
+  </section>
+
+  <!-- MAIN: aquí está la sección dinámica (catalogo) -->
+  <main class="main">
+    <section id="contenido-dinamico" class="catalogo" aria-live="polite">
+      <!-- Contenido inicial: Productos (el catálogo con carruseles) -->
+      <h2>Catálogo de Productos</h2>
+      <div class="grid-productos">
+
+        <!-- Producto 1 -->
+        <div class="producto">
+          <div class="carrusel">
+            <img src="https://preview.free3d.com/img/2015/01/2279214978823095327/aboc6yvj.jpg" alt="Motor 1" class="active">
+            <img src="https://m.media-amazon.com/images/I/71JUNefCNGL.jpg" alt="Motor 2">
+            <img src="https://www.factorymation.com/assets/images/category-images/ACMotors_img2.jpg" alt="Motor 3">
+          </div>
+          <h3>Motor para Mezcladora 1.5HP</h3>
+          <p>$380.000</p>
+        </div>
+
+        <!-- Producto 2 -->
+        <div class="producto">
+          <div class="carrusel">
+            <img src="https://st2.depositphotos.com/1007385/7020/i/450/depositphotos_70205621-stock-photo-electricity-distribution-box-with-wires.jpg" alt="Interruptor 1" class="active">
+            <img src="https://st4.depositphotos.com/1756291/21823/i/450/depositphotos_218234130-stock-photo-male-finger-switching-circuit-breakers.jpg" alt="Interruptor 2">
+            <img src="https://www.publicdomainpictures.net/pictures/230000/nahled/industrial-light-switch.jpg" alt="Interruptor 3">
+          </div>
+          <h3>Interruptor industrial resistente</h3>
+          <p>$45.000</p>
+        </div>
+
+        <!-- Producto 3 -->
+        <div class="producto">
+          <div class="carrusel">
+            <img src="https://png.pngtree.com/thumb_back/fh260/background/20220225/pngtree-antique-automotive-transmission-cluster-gear-torque-pinion-metallic-photo-image_26323988.jpg" alt="Piñón 1" class="active">
+            <img src="https://previews.123rf.com/images/wlad74/wlad741406/wlad74140600097/28903891-pinion-gear-of-mechanical-machine-in-a-factory.jpg" alt="Piñón 2">
+            <img src="https://spicerparts.com/sites/default/files/inline-images/ring_and_pinion_parts_0_0.jpg" alt="Piñón 3">
+          </div>
+          <h3>Piñón acero reforzado</h3>
+          <p>$60.000</p>
+        </div>
+
+        <!-- Producto 4 -->
+        <div class="producto">
+          <div class="carrusel">
+            <img src="https://www.mir-belting.com/wp-content/uploads/2021/06/AdobeStock_320476004___-scaled.jpg" alt="Correa 1" class="active">
+            <img src="https://png.pngtree.com/thumb_back/fh260/background/20220228/pngtree-belt-isolated-industrial-cog-belt-engine-belt-photo-image_676696.jpg" alt="Correa 2">
+            <img src="https://m.media-amazon.com/images/I/617FAD501kL._AC_UF894%2C1000_QL80_.jpg" alt="Correa 3">
+          </div>
+          <h3>Correa reforzada tipo industrial</h3>
+          <p>$25.000</p>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- Ubicación fija (puede quedar también abajo, pero no se usa para la dinámica) -->
+  <section class="ubicacion" aria-hidden="true" style="display:none">
+    <h2>Ubicación</h2>
+    <iframe class="map-embed"
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3986.8926221242505!2d-75.6291224!3d2.1943322!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e24d98253e36397%3A0xf658d8b42edd0178!2sCra.%209%20%233-59%2C%20Garz%C3%B3n%2C%20Huila!5e0!3m2!1ses-419!2sco!4v1762460995881!5m2!1ses-419!2sco"
+      loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+  </section>
+
+  <footer>
+    © 2025 Bauker Repuestos & Accesorios — Código propiedad de Ing. Alejandro López Marulanda. Reproducción total prohibida sin autorización.
+  </footer>
+
+  <script>
+    /* -------------------------
+       Funcionalidad dinámica del menú
+       ------------------------- */
+    const menuLinks = document.querySelectorAll('nav ul li a[data-section]');
+    const contenido = document.getElementById('contenido-dinamico');
+
+    // HTML para secciones (productos ya está en el DOM; guardamos su markup para restaurar)
+    const productosHTML = contenido.innerHTML.trim();
+
+    // HTML para "Servicios" (placeholder)
+    const serviciosHTML = `
+      <h2>Servicios</h2>
+      <div class="contact-card" style="padding:20px;border-radius:12px;background:var(--color-secundario);">
+        <p style="color:#ddd">Ofrecemos instalación, mantenimiento y asesoría técnica para mezcladoras y maquinaria industrial. <br>
+        Contáctanos para cotizaciones y revisiones técnicas en el Eje Cafetero y nacionalmente.</p>
+      </div>
+    `;
+
+    // HTML para "Contacto" (se renderiza en lugar del catálogo)
+    const contactoHTML = `
+      <h2>Contáctanos</h2>
+      <div class="contact-card">
+        <div class="contact-row">
+          <div class="location-icon">📍</div>
+          <div>
+            <strong>Dirección</strong><br>
+            Cra. 9 #3-59, Garzón, Huila, Colombia
+          </div>
+        </div>
+
+        <div class="contact-row">
+          <div style="min-width:120px">
+            <strong>Horario</strong><br>
+            Lun-Sáb: 7:00 - 18:00
+          </div>
+
+          <div style="min-width:160px">
+            <strong>Teléfono / WhatsApp</strong><br>
+            <a class="btn" href="https://wa.me/573001234567" target="_blank" rel="noopener">💬 WhatsApp</a>
+          </div>
+
+          <div style="min-width:160px">
+            <strong>Red social</strong><br>
+            <a class="btn" href="https://facebook.com" target="_blank" rel="noopener">🌐 Facebook</a>
+          </div>
+        </div>
+
+        <div>
+          <strong>Mapa</strong>
+          <iframe class="map-embed"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3986.8926221242505!2d-75.6291224!3d2.1943322!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e24d98253e36397%3A0xf658d8b42edd0178!2sCra.%209%20%233-59%2C%20Garz%C3%B3n%2C%20Huila!5e0!3m2!1ses-419!2sco!4v1762460995881!5m2!1ses-419!2sco"
+            loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+      </div>
+    `;
+
+    // Render inicial: "Inicio" (no hace nada porque banner está visible). Dejamos "Productos" por defecto.
+    function setActiveLink(section){
+      menuLinks.forEach(link=>{
+        link.classList.toggle('active', link.dataset.section===section);
+      });
+    }
+
+    function mostrarSeccion(section){
+      // Ajusta comportamiento según la sección elegida
+      if(section === 'inicio'){
+        // Restaurar productos (si estaban ocultos) y hacer scroll a banner
+        contenido.innerHTML = productosHTML;
+        restartCarousels(); // vuelve a iniciar carruseles
+        setActiveLink('inicio');
+        window.scrollTo({top:0,behavior:'smooth'});
+      } else if(section === 'productos'){
+        contenido.innerHTML = productosHTML;
+        restartCarousels();
+        setActiveLink('productos');
+        // scrollear suavemente al contenido dinámico
+        contenido.scrollIntoView({behavior:'smooth',block:'start'});
+      } else if(section === 'servicios'){
+        contenido.innerHTML = serviciosHTML;
+        setActiveLink('servicios');
+        contenido.scrollIntoView({behavior:'smooth',block:'start'});
+      } else if(section === 'contacto'){
+        contenido.innerHTML = contactoHTML;
+        setActiveLink('contacto');
+        contenido.scrollIntoView({behavior:'smooth',block:'start'});
+      }
+    }
+
+    // listeners del menú
+    menuLinks.forEach(link=>{
+      link.addEventListener('click', (e)=>{
+        e.preventDefault();
+        const section = link.dataset.section;
+        mostrarSeccion(section);
+      });
+    });
+
+    /* -------------------------
+       Carrusel: función para iniciar/ reiniciar todos los carruseles
+       ------------------------- */
+    let carouselIntervals = []; // guardamos intervalos para limpiarlos al re-render
+    function restartCarousels(){
+      // limpiar intervalos antiguos
+      carouselIntervals.forEach(id=>clearInterval(id));
+      carouselIntervals = [];
+
+      // Iniciar carruseles presentes en el DOM
+      document.querySelectorAll('.carrusel').forEach(carrusel=>{
+        let index = 0;
+        const imgs = carrusel.querySelectorAll('img');
+        // garantizar que sólo uno tenga .active
+        imgs.forEach((img,i)=> img.classList.toggle('active', i===0));
+        const id = setInterval(()=>{
+          if(imgs.length===0) return;
+          imgs[index].classList.remove('active');
+          index = (index+1) % imgs.length;
+          imgs[index].classList.add('active');
+        }, 3000);
+        carouselIntervals.push(id);
+      });
+    }
+
+    // banner rotativo (inicia al cargar)
+    (function bannerRotate(){
+      const banner = document.getElementById('banner');
+      const images = [
+        "https://plus.unsplash.com/premium_photo-1674927125657-e8782933d009?fm=jpg&ixlib=rb-4.1.0&q=80&w=1600",
+        "https://plus.unsplash.com/premium_photo-1661963687013-36b88a78062e?fm=jpg&ixlib=rb-4.1.0&q=80&w=1600",
+        "https://plus.unsplash.com/premium_photo-1674927125667-9ef5dcf7d125?fm=jpg&ixlib=rb-4.1.0&q=80&w=1600"
+      ];
+      let cur=0;
+      function setBg(){
+        banner.style.backgroundImage = `linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.7)), url('${images[cur]}')`;
+        cur = (cur+1) % images.length;
+      }
+      setBg();
+      setInterval(setBg,3000);
+    })();
+
+    // iniciar carruseles al cargar la página
+    restartCarousels();
+
+    /* -------------------------
+       Protecciones ligeras (cosméticas)
+       - evita click derecho (solo molestia, no seguridad real)
+       ------------------------- */
+    document.addEventListener('contextmenu', e=> e.preventDefault());
+    // también evita Ctrl+U / Ctrl+S (muy fácil de saltar pero molesta)
+    document.addEventListener('keydown', (e)=>{
+      if((e.ctrlKey && e.key.toLowerCase()==='u') || (e.ctrlKey && e.key.toLowerCase()==='s')){
+        e.preventDefault();
+      }
+    });
+  </script>
+</body>
+</html>
