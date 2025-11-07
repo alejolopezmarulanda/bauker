@@ -153,7 +153,6 @@ footer span{ color:var(--color-principal) }
     </section>
   </main>
 
-  <!-- Ubicación fija (puede quedar también abajo, pero no se usa para la dinámica) -->
   <section class="ubicacion" aria-hidden="true" style="display:none">
     <h2>Ubicación</h2>
     <iframe class="map-embed"
@@ -166,16 +165,9 @@ footer span{ color:var(--color-principal) }
   </footer>
 
   <script>
-    /* -------------------------
-       Funcionalidad dinámica del menú
-       ------------------------- */
     const menuLinks = document.querySelectorAll('nav ul li a[data-section]');
     const contenido = document.getElementById('contenido-dinamico');
-
-    // HTML para secciones (productos ya está en el DOM; guardamos su markup para restaurar)
     const productosHTML = contenido.innerHTML.trim();
-
-    // HTML para "Servicios" (placeholder)
     const serviciosHTML = `
       <h2>Servicios</h2>
       <div class="contact-card" style="padding:20px;border-radius:12px;background:var(--color-secundario);">
@@ -183,8 +175,6 @@ footer span{ color:var(--color-principal) }
         Contáctanos para cotizaciones y revisiones técnicas en el Eje Cafetero y nacionalmente.</p>
       </div>
     `;
-
-    // HTML para "Contacto" (se renderiza en lugar del catálogo)
     const contactoHTML = `
       <h2>Contáctanos</h2>
       <div class="contact-card">
@@ -195,24 +185,20 @@ footer span{ color:var(--color-principal) }
             Cra. 9 #3-59, Garzón, Huila, Colombia
           </div>
         </div>
-
         <div class="contact-row">
           <div style="min-width:120px">
             <strong>Horario</strong><br>
             Lun-Sáb: 7:00 - 18:00
           </div>
-
           <div style="min-width:160px">
             <strong>Teléfono / WhatsApp</strong><br>
             <a class="btn" href="https://wa.me/573001234567" target="_blank" rel="noopener">💬 WhatsApp</a>
           </div>
-
           <div style="min-width:160px">
             <strong>Red social</strong><br>
             <a class="btn" href="https://facebook.com" target="_blank" rel="noopener">🌐 Facebook</a>
           </div>
         </div>
-
         <div>
           <strong>Mapa</strong>
           <iframe class="map-embed"
@@ -222,26 +208,16 @@ footer span{ color:var(--color-principal) }
       </div>
     `;
 
-    // Render inicial: "Inicio" (no hace nada porque banner está visible). Dejamos "Productos" por defecto.
     function setActiveLink(section){
-      menuLinks.forEach(link=>{
-        link.classList.toggle('active', link.dataset.section===section);
-      });
+      menuLinks.forEach(link=>link.classList.toggle('active', link.dataset.section===section));
     }
 
     function mostrarSeccion(section){
-      // Ajusta comportamiento según la sección elegida
-      if(section === 'inicio'){
-        // Restaurar productos (si estaban ocultos) y hacer scroll a banner
-        contenido.innerHTML = productosHTML;
-        restartCarousels(); // vuelve a iniciar carruseles
-        setActiveLink('inicio');
-        window.scrollTo({top:0,behavior:'smooth'});
-      } else if(section === 'productos'){
+      if(section === 'inicio' || section === 'productos'){
         contenido.innerHTML = productosHTML;
         restartCarousels();
-        setActiveLink('productos');
-        // scrollear suavemente al contenido dinámico
+        habilitarCompraPorWhatsApp(); // ✅ activa clics de compra
+        setActiveLink(section);
         contenido.scrollIntoView({behavior:'smooth',block:'start'});
       } else if(section === 'servicios'){
         contenido.innerHTML = serviciosHTML;
@@ -254,29 +230,21 @@ footer span{ color:var(--color-principal) }
       }
     }
 
-    // listeners del menú
     menuLinks.forEach(link=>{
-      link.addEventListener('click', (e)=>{
+      link.addEventListener('click', e=>{
         e.preventDefault();
         const section = link.dataset.section;
         mostrarSeccion(section);
       });
     });
 
-    /* -------------------------
-       Carrusel: función para iniciar/ reiniciar todos los carruseles
-       ------------------------- */
-    let carouselIntervals = []; // guardamos intervalos para limpiarlos al re-render
+    let carouselIntervals = [];
     function restartCarousels(){
-      // limpiar intervalos antiguos
       carouselIntervals.forEach(id=>clearInterval(id));
       carouselIntervals = [];
-
-      // Iniciar carruseles presentes en el DOM
       document.querySelectorAll('.carrusel').forEach(carrusel=>{
         let index = 0;
         const imgs = carrusel.querySelectorAll('img');
-        // garantizar que sólo uno tenga .active
         imgs.forEach((img,i)=> img.classList.toggle('active', i===0));
         const id = setInterval(()=>{
           if(imgs.length===0) return;
@@ -288,7 +256,6 @@ footer span{ color:var(--color-principal) }
       });
     }
 
-    // banner rotativo (inicia al cargar)
     (function bannerRotate(){
       const banner = document.getElementById('banner');
       const images = [
@@ -305,20 +272,34 @@ footer span{ color:var(--color-principal) }
       setInterval(setBg,3000);
     })();
 
-    // iniciar carruseles al cargar la página
     restartCarousels();
 
-    /* -------------------------
-       Protecciones ligeras (cosméticas)
-       - evita click derecho (solo molestia, no seguridad real)
-       ------------------------- */
     document.addEventListener('contextmenu', e=> e.preventDefault());
-    // también evita Ctrl+U / Ctrl+S (muy fácil de saltar pero molesta)
     document.addEventListener('keydown', (e)=>{
       if((e.ctrlKey && e.key.toLowerCase()==='u') || (e.ctrlKey && e.key.toLowerCase()==='s')){
         e.preventDefault();
       }
     });
+
+    /* -------------------------
+       ✅ NUEVA FUNCIÓN: compra por WhatsApp
+       ------------------------- */
+    function habilitarCompraPorWhatsApp(){
+      document.querySelectorAll('.producto').forEach(prod=>{
+        prod.addEventListener('click', ()=>{
+          const nombreProducto = prod.querySelector('h3').innerText.trim();
+          const confirmar = confirm(`¿Deseas comprar "${nombreProducto}"?`);
+          if(confirmar){
+            const numero = "573001234567"; // 🔧 cambia a tu número real
+            const mensaje = encodeURIComponent(`Hola 👋, estoy interesado en comprar el producto: ${nombreProducto}`);
+            const url = `https://wa.me/${numero}?text=${mensaje}`;
+            window.open(url, "_blank");
+          }
+        });
+      });
+    }
+
+    habilitarCompraPorWhatsApp();
   </script>
 </body>
 </html>
