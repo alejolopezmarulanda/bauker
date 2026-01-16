@@ -7,7 +7,7 @@
 
   <!-- Fuente Poppins desde Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet"/>
-
+<link rel="stylesheet" href="estilos.css" />
  
 </head>
 <body>
@@ -16,7 +16,6 @@
        HEADER
        ======================= -->
   <header>
-    <link rel="stylesheet" href="estilos.css" />
     <div class="logo">Ab</div>
     <nav>
       <ul>
@@ -110,7 +109,7 @@
        FOOTER
        ======================= -->
   <footer>
-    © 2025 Bauker Repuestos & Accesorios — Código propiedad de Ing. Alejandro López Marulanda. Reproducción total prohibida sin autorización.
+    © 2026 Bauker Repuestos & Accesorios — Código propiedad de Ing. Alejandro López Marulanda. Reproducción total prohibida sin autorización.
   </footer>
 
   <!-- =======================
@@ -174,7 +173,7 @@
           </div>
         </div>
         <div>
-          <strong>Mapa</strong>
+          <strong>Mapa</strong><br>
           <iframe class="map-embed"
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3986.8926221242505!2d-75.6291224!3d2.1943322!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e24d98253e36397%3A0xf658d8b42edd0178!2sCra.%209%20%233-59%2C%20Garz%C3%B3n%2C%20Huila!5e0!3m2!1ses-419!2sco!4v1762460995881!5m2!1ses-419!2sco"
             loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
@@ -190,7 +189,10 @@
     }
 
     function mostrarSeccion(section) {
-      if (section === 'inicio' || section === 'productos') {
+      if (section === 'inicio') {
+    location.reload(); // 👈 recarga la página completa
+  }
+  else if (section === 'productos') {
         contenido.innerHTML = productosHTML;
         restartCarousels();
         activarCompra(); // activa clics de compra
@@ -298,6 +300,9 @@
     }
 
     activarCompra();
+    window.onbeforeunload = function () {
+  window.scrollTo(0, 0);
+};
   </script>
 
 </body>
